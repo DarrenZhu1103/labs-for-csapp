@@ -271,14 +271,15 @@ int findObject(char *url) {
 int findIndex() {
 	int i, result = 0;
 	for (i = 0; i < OBJECT_NUM; i++) {
+		P(&cache[i].countMutex);
 		if (!cache[i].valid) {
-			P(&cache[i].countMutex);
 			cache[i].valid = 1;
 			V(&cache[i].countMutex);
 			return i;
 		}
 		if (cache[i].count > cache[result].count)
 			result = i;
+		V(&cache[i].countMutex);
 	}
 	return result;
 }
