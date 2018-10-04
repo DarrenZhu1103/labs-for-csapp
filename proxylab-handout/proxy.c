@@ -251,20 +251,19 @@ void send_header(char *host, char *filename, int port, rio_t *rp, int fd) {
 int findObject(char *url) {
 	int i, result = -1;
 	for (i = 0; i < OBJECT_NUM; i++) {
+		P(&cache[i].countMutex);
 		if (!cache[i].valid) {
+			V(&cache[i].countMutex);
 			break;
 		}
-		if (strcmp(cache[i].url, url)) {
-			P(&cache[i].countMutex);
+		if (strcmp(cache[i].url, url))
 			cache[i].count++;
-			V(&cache[i].countMutex);
-		} else {
+		else {
 			P(&cache[i].dataMutex);
-			P(&cache[i].countMutex);
 			cache[i].count = 0;
-			V(&cache[i].countMutex);
 			result = i;
 		}
+		V(&cache[i].countMutex);
 	}
 	return result;
 }
