@@ -158,7 +158,7 @@ void doit(int fd)
 		strcpy(cache[index].url, message);
 		strcpy(cache[index].object, obj);
 		V(&cache[index].countMutex);
-    	V(&cache[index].dataMutex);
+    		V(&cache[index].dataMutex);
 	}
 	
 	Close(clientfd);
